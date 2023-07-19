@@ -29,5 +29,20 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
+//when application restarted, it checks any pending migrations exists or not
+ApplyMigrations();
 app.Run();
+
+//Imp Function  for override update-database into Package manager console and also update/Insert record into DB.
+void ApplyMigrations()
+{
+    using(var scope = app.Services.CreateScope())
+    {
+        var _db=scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+        if(_db.Database.GetPendingMigrations().Count() > 0)
+        {
+            _db.Database.Migrate();
+        }
+    }
+}
