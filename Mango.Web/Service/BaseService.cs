@@ -10,6 +10,8 @@ namespace Mango.Web.Service
     public class BaseService : IBaseService
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        //private readonly ITokenProvider _tokenProvider;
+
         public BaseService(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
@@ -22,8 +24,22 @@ namespace Mango.Web.Service
 
                 //Data storing into Request Message Instance
                 HttpRequestMessage message = new();
-                message.Headers.Add("Content-Type", "application/json");
+                
                 //Access Token
+                if(requestDto.ContentType == ContentType.MultipartFormData)
+                {
+                    message.Headers.Add("Accept", "*/*");
+                }
+                else
+                {
+                    message.Headers.Add("Accept", "application/json");
+                }
+                //token
+                //if (withBearer)
+                //{
+                //    var token = _tokenProvider.GetToken();
+                //    message.Headers.Add("Authorization", $"Bearer {token}");
+                //}
 
                 message.RequestUri = new Uri(requestDto.Url);
                 if (requestDto.Url != null)
